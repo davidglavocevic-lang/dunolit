@@ -11,7 +11,19 @@ kamena i arhitektonska rjesenja po mjeri.
 - galerija realiziranih projekata
 - prikaz procesa rada
 - kontakt obrazac za upite
+- jezici HR, EN, DE, SV i DA
+- administracija materijala, projekata, upita i postavki
 - SEO i Open Graph metapodaci
+
+## Admin
+
+Administracija je dostupna na `/admin`.
+
+- korisnik: `demo`
+- lozinka: `demo123`
+
+Demo podaci i promjene spremaju se lokalno u pregledniku. Podatkovni sloj je
+predviđen za kasniju zamjenu Supabase bazom i autentikacijom.
 
 ## Tehnologije
 

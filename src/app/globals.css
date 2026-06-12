@@ -87,6 +87,29 @@ button { cursor: pointer; }
   font-weight: 700;
   letter-spacing: .12em;
 }
+.language-picker { position: relative; }
+.language-menu {
+  position: absolute;
+  top: calc(100% + 16px);
+  right: 0;
+  min-width: 76px;
+  padding: 7px;
+  background: white;
+  border: 1px solid var(--line);
+  box-shadow: 0 16px 35px rgba(0, 36, 68, .13);
+}
+.language-menu button {
+  width: 100%;
+  padding: 9px 11px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-align: left;
+}
+.language-menu button:hover, .language-menu button.active { background: var(--soft); color: var(--deep-blue); }
 .header-cta {
   padding: 12px 17px;
   background: var(--deep-blue);
