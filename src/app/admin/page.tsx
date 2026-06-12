@@ -14,6 +14,7 @@ import {
   Menu,
   Plus,
   Save,
+  RefreshCw,
   Settings,
   Trash2,
   X,
@@ -89,6 +90,21 @@ export default function AdminPage() {
 
   useEffect(() => {
     if (!ready) return;
+    const refreshInquiries = () => setInquiries(readStore("dunolit-inquiries", []));
+    const interval = window.setInterval(refreshInquiries, 5000);
+    window.addEventListener("focus", refreshInquiries);
+    window.addEventListener("storage", refreshInquiries);
+    window.addEventListener("dunolit-inquiries-updated", refreshInquiries);
+    return () => {
+      window.clearInterval(interval);
+      window.removeEventListener("focus", refreshInquiries);
+      window.removeEventListener("storage", refreshInquiries);
+      window.removeEventListener("dunolit-inquiries-updated", refreshInquiries);
+    };
+  }, [ready]);
+
+  useEffect(() => {
+    if (!ready) return;
     window.localStorage.setItem("dunolit-materials", JSON.stringify(materials));
     window.localStorage.setItem("dunolit-projects", JSON.stringify(projects));
     window.localStorage.setItem("dunolit-inquiries", JSON.stringify(inquiries));
@@ -116,6 +132,26 @@ export default function AdminPage() {
   function flash(message: string) {
     setNotice(message);
     window.setTimeout(() => setNotice(""), 2400);
+  }
+
+  function refreshInquiries() {
+    setInquiries(readStore("dunolit-inquiries", []));
+    flash("Popis upita je osvježen.");
+  }
+
+  function createTestInquiry() {
+    const test: Inquiry = {
+      id: `TEST-${Date.now().toString().slice(-8)}`,
+      createdAt: new Date().toISOString(),
+      name: "Testni korisnik",
+      email: "test@dunolit.com",
+      material: "Mramor",
+      location: "Kiseljak",
+      message: "Ovo je testni upit za provjeru javne forme i admin pregleda.",
+      status: "Novo",
+    };
+    setInquiries((items) => [test, ...items]);
+    flash(`Testni upit ${test.id} je dodan.`);
   }
 
   if (!ready) return null;
@@ -256,10 +292,15 @@ export default function AdminPage() {
 
           {tab === "inquiries" && (
             <CrudSection title="Upiti klijenata" description="Pregledajte poruke s javne stranice i pratite status obrade.">
+              <div className={styles.inquiryActions}>
+                <button onClick={createTestInquiry}><Plus size={17} /> Kreiraj testni upit</button>
+                <button onClick={refreshInquiries}><RefreshCw size={17} /> Osvježi popis</button>
+                <p>Upiti poslani s javne forme na ovom uređaju pojavljuju se ovdje.</p>
+              </div>
               {inquiries.length === 0 ? <Empty text="Novi upiti s kontakt forme pojavit će se ovdje." /> : (
                 <div className={styles.inquiryList}>{inquiries.map((item) => (
                   <article className={styles.inquiryCard} key={item.id}>
-                    <div><span>{new Date(item.createdAt).toLocaleDateString("hr-HR")}</span><h3>{item.name}</h3><a href={`mailto:${item.email}`}>{item.email}</a></div>
+                    <div><span>{new Date(item.createdAt).toLocaleString("hr-HR")} · {item.id}</span><h3>{item.name}</h3><a href={`mailto:${item.email}`}>{item.email}</a></div>
                     <div><strong>{item.material || "Opći upit"}</strong><p>{item.message}</p><small>{item.location}</small></div>
                     <select value={item.status} onChange={(event) => setInquiries((items) => items.map((entry) => entry.id === item.id ? { ...entry, status: event.target.value } : entry))}><option>Novo</option><option>U obradi</option><option>Odgovoreno</option><option>Zatvoreno</option></select>
                     <button className={styles.delete} onClick={() => setInquiries((items) => items.filter((entry) => entry.id !== item.id))}><Trash2 size={17} /></button>
@@ -272,9 +313,9 @@ export default function AdminPage() {
           {tab === "settings" && (
             <CrudSection title="Postavke web stranice" description="Osnovni kontaktni i poslovni podaci.">
               <form className={styles.settingsForm} onSubmit={(event) => { event.preventDefault(); flash("Postavke su spremljene."); }}>
-                <label>Kontakt email<input defaultValue="info@dunolit.com" type="email" /></label>
-                <label>Telefon<input defaultValue="+385 (0) 00 000 000" /></label>
-                <label>Lokacija<input defaultValue="Split, Hrvatska" /></label>
+                <label>Kontakt email<input defaultValue="duno@telnet.ba" type="email" /></label>
+                <label>Telefon<input defaultValue="+387 30 879 387" /></label>
+                <label>Lokacija<input defaultValue="Lug b.b., 71250 Kiseljak" /></label>
                 <label>SEO naslov<input defaultValue="Dunolit | Majstorstvo u kamenu" /></label>
                 <button><Save size={17} /> Spremi postavke</button>
               </form>

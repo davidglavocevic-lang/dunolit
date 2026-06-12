@@ -429,6 +429,9 @@ h1, h2, h3, blockquote { font-family: var(--serif); font-weight: 400; }
 .contact-form textarea { resize: vertical; }
 .contact-form .button { align-self: start; }
 .success { display: flex; align-items: center; gap: 9px; margin: 0; color: #bce1c7; font-size: 13px; }
+.success-message { padding: 16px 18px; border: 1px solid rgba(188,225,199,.45); background: rgba(188,225,199,.08); }
+.success-message strong, .success-message span { display: block; margin-top: 8px; color: #d9eee0; font-size: 12px; }
+.success-message span { color: #aebdc7; font-weight: 400; }
 
 footer {
   display: grid;

@@ -6,6 +6,7 @@ import {
   ArrowRight,
   Check,
   ChevronDown,
+  Clock3,
   Download,
   Mail,
   MapPin,
@@ -112,7 +113,7 @@ export default function Home() {
   const [locale, setLocale] = useState<Locale>("hr");
   const [activeType, setActiveType] = useState("Sve");
   const [query, setQuery] = useState("");
-  const [submitted, setSubmitted] = useState(false);
+  const [submitted, setSubmitted] = useState("");
   const t = (value: string) => translate(locale, value);
 
   useEffect(() => {
@@ -143,8 +144,9 @@ export default function Home() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const stored = JSON.parse(window.localStorage.getItem("dunolit-inquiries") ?? "[]");
+    const inquiryId = `DUN-${Date.now().toString().slice(-8)}`;
     stored.unshift({
-      id: crypto.randomUUID(),
+      id: inquiryId,
       createdAt: new Date().toISOString(),
       name: data.get("name"),
       email: data.get("email"),
@@ -154,7 +156,8 @@ export default function Home() {
       status: "Novo",
     });
     window.localStorage.setItem("dunolit-inquiries", JSON.stringify(stored));
-    setSubmitted(true);
+    window.dispatchEvent(new Event("dunolit-inquiries-updated"));
+    setSubmitted(inquiryId);
     event.currentTarget.reset();
   }
 
@@ -442,9 +445,10 @@ export default function Home() {
               {t("Pošaljite osnovne informacije. Naš tim će pregledati zahtjev i javiti se s preporukom materijala i sljedećim koracima.")}
             </p>
             <div className="contact-details">
-              <a href="mailto:info@dunolit.com"><Mail size={18} /> info@dunolit.com</a>
-              <span><Phone size={18} /> +385 (0) 00 000 000</span>
-              <span><MapPin size={18} /> Split, Hrvatska</span>
+              <a href="mailto:duno@telnet.ba"><Mail size={18} /> duno@telnet.ba</a>
+              <a href="tel:+38730879387"><Phone size={18} /> +387 30 879 387</a>
+              <span><MapPin size={18} /> Duno Lit & Marbo Stone, Lug b.b., 71250 Kiseljak</span>
+              <span><Clock3 size={18} /> Pon–pet 07:00–17:00 · Sub 07:00–16:00</span>
             </div>
           </div>
           <form className="contact-form" onSubmit={handleSubmit}>
@@ -467,7 +471,11 @@ export default function Home() {
               {t("Pošalji upit")} <ArrowRight size={17} />
             </button>
             {submitted && (
-              <p className="success"><Check size={18} /> {t("Upit je zaprimljen. Javit ćemo vam se uskoro.")}</p>
+              <div className="success-message">
+                <p className="success"><Check size={18} /> {t("Upit je zaprimljen. Javit ćemo vam se uskoro.")}</p>
+                <strong>Broj upita: {submitted}</strong>
+                <span>Upit je spremljen u Admin → Upiti na ovom uređaju.</span>
+              </div>
             )}
           </form>
         </section>
