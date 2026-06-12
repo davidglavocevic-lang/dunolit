@@ -224,7 +224,6 @@ export default function Home() {
           <a href="#proces" onClick={() => setMenuOpen(false)}>{t("Proces")}</a>
           <a href="#o-nama" onClick={() => setMenuOpen(false)}>{t("O nama")}</a>
           <a href="#kontakt" onClick={() => setMenuOpen(false)}>{t("Kontakt")}</a>
-          <a href="/admin" onClick={() => setMenuOpen(false)}>{t("Admin")}</a>
         </nav>
         <div className="header-actions">
           <div className="language-picker">
@@ -484,7 +483,6 @@ export default function Home() {
           <a href="#projekti">{t("Projekti")}</a>
           <a href="#proces">{t("Proces")}</a>
           <a href="#kontakt">{t("Kontakt")}</a>
-          <a href="/admin">{t("Admin")}</a>
         </div>
         <p>© {new Date().getFullYear()} Dunolit. {t("Sva prava pridržana.")}</p>
       </footer>
